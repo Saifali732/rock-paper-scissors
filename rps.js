@@ -33,9 +33,9 @@ function game() {
     let computerScore = 0;
     //play 5 rounds, keeping track of the score
     for (let i = 0; i < 5; i++) {
-        const conputerSelection = computerPlay();
+        const computerSelection = computerPlay();
         const playerSelection = prompt("rock, paper, or scissors?");
-        const result = playRound(playerSelection, conputerSelection);
+        const result = playRound(playerSelection, computerSelection);
         //update score if someone won the round
         if (result.charAt(4) === 'w') {
             playerScore++;
