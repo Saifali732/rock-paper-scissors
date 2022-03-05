@@ -1,3 +1,16 @@
+let playerScore = 0;
+let computerScore = 0;
+
+document.querySelector('#score').textContent = `${playerScore} - ${computerScore}`;
+
+// make reset button to reset the game
+const reset = document.querySelector("#reset");
+reset.addEventListener('click', () => {
+    playerScore = 0;
+    computerScore = 0;
+    document.querySelector('#score').textContent = `${playerScore} - ${computerScore}`;
+    document.querySelector('#results').textContent = "";
+});
 //function selects the move for the computer randomly
 function computerPlay() {
     //generates a number between 1 and 3
@@ -13,46 +26,50 @@ function computerPlay() {
 }
 
 //Plays one round of rps
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelection) {
+    const computerSelection = computerPlay();
     playerSelection = playerSelection.toLowerCase();
+    let result = '';
     if (playerSelection === "rock" && computerSelection == "scissors" ||
         playerSelection === "paper" && computerSelection == "rock" ||
         playerSelection === "scissors" && computerSelection == "paper") {
-        return `You win! ${playerSelection} beats ${computerSelection}`;
+        result = `You win! ${playerSelection} beats ${computerSelection}`;
+        playerScore++;
     } else if (computerSelection === "rock" && playerSelection == "scissors" ||
         computerSelection === "paper" && playerSelection == "rock" ||
         computerSelection === "scissors" && playerSelection == "paper") {
-        return `You lose! ${computerSelection} beats ${playerSelection}`;
+        result = `You lose! ${computerSelection} beats ${playerSelection}`;
+        computerScore++;
     } else {
-        return 'Tie!';
+        result = 'Tie!';
     }
+    // display the result within the results div
+    document.querySelector('#results').textContent = result;
+    document.querySelector('#score').textContent = `${playerScore} - ${computerScore}`;
+    // now check winner
+    checkWinner();
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    //play 5 rounds, keeping track of the score
-    for (let i = 0; i < 5; i++) {
-        const computerSelection = computerPlay();
-        const playerSelection = prompt("rock, paper, or scissors?");
-        const result = playRound(playerSelection, computerSelection);
-        //update score if someone won the round
-        if (result.charAt(4) === 'w') {
-            playerScore++;
-        } else if (result.charAt(4) === 'l') {
-            computerScore++;
-        }
-        console.log(result);
-        if (i != 4) {
-            console.log(`Current Score is You: ${playerScore} Computer: ${computerScore}`);
-        }
-    }
-    //report final scores and winner
-    if (playerScore > computerScore) {
-        console.log(`You Win! Final score: ${playerScore} - ${computerScore}`);
-    } else if (computerScore > playerScore) {
-        console.log(`You Lose! Final score: ${playerScore} - ${computerScore}`);
+// function to check if there is a winner in the game
+function checkWinner() {
+    // first make sure there is a winner
+    if (playerScore < 5 && computerScore < 5) return;
+
+    // display the output
+    if (playerScore === 5) {
+        // document.querySelector('#results').append("You Win!");
+        document.querySelector('#results').textContent = "You Beat the Computer!";
     } else {
-        console.log(`You Tied! Final score: ${playerScore} - ${computerScore}`);
+        // document.querySelector('#results').append("You Lose!");
+        document.querySelector('#results').textContent = "You Lost to the Computer :("
     }
+    playerScore = computerScore = 0;
 }
+
+
+
+// selects all of the button choices and listens for what the user picks to play 1 round
+const choices = document.querySelector('#choices').querySelectorAll("button");
+choices.forEach(button => button.addEventListener('click', function () {
+    playRound(button.value);
+}));
